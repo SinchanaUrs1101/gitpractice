@@ -1,0 +1,30 @@
+---
+- name: Example Playbook
+  hosts: localhost
+  become: true           # Apply privilege escalation globally
+  gather_facts: false    # Disable fact gathering to speed up execution if not needed
+
+  tasks:
+    - name: Update apt cache and install git
+      apt:
+        name: git
+        state: present
+        update_cache: yes
+
+    - name: Install latest jq
+      apt:
+        name: jq
+        state: latest
+
+    - name: Check for Python 3 version
+      command: python3 --version
+      register: sample_output
+      changed_when: false  # Prevents task from being marked as changed unnecessarily
+
+    - name: Print Python version using debug (var)
+      debug:
+        var: sample_output.stdout
+
+    - name: Print Python version using debug (msg)
+      debug:
+        msg: "{{ sample_output.stdout }}"
